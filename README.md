@@ -34,3 +34,5 @@ Also super simple! Run following commands:
 ```bash
 ./tools/run.sh
 ```
+
+Or run in vscode `ctrl` + `shift` + `P`, then `run task` and finally `run hatari` 😎.
