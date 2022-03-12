@@ -7,11 +7,11 @@ This is my personal playground to work with Atari ST computers.
 This repo will require following tools
 
 - `direnv` (or source `.envrc` when you need to work on this project)
-- cmake
+- `cmake`
 - [M68K atari mint cross tools](http://vincent.riviere.free.fr/soft/m68k-atari-mint/)
-- zip
-- mkfs.fat
-- hatari
+- `zip`
+- `mkfs.fat`
+- [hatari](https://hatari.tuxfamily.org/)
 - root privileges
 
 ## How to build
@@ -24,6 +24,8 @@ cd build
 cmake ..
 make
 ```
+
+Or run in vscode `F7` (require cmake extension) 😉.
 
 ## How to run
 
