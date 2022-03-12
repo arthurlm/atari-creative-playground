@@ -13,3 +13,7 @@ _deps
 
 # build folder
 build/
+
+# Image files
+image/
+*.st
