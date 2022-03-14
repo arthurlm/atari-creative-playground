@@ -7,4 +7,8 @@ add_compile_options(-Wall)
 add_compile_options(-m68000)
 add_link_options(-Wl,--traditional-format)
 
-add_executable(app.prg src/main.c)
+include_directories(src/includes)
+add_executable(app.prg
+    src/main.c
+    src/linea.c
+)
