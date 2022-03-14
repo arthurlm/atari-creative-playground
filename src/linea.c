@@ -77,7 +77,7 @@ void linea_draw_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
     p_linea_parameter_block->y2 = y2;
 
     // Bit pattern for the line type; the bit pattern is to be interpreted as a dot pattern
-    p_linea_parameter_block->ln_mask = 0;
+    p_linea_parameter_block->ln_mask = 0xFFFF;
 
     // Writing mode; the following modes are possible:
     // - REPLACE 0 : Replace
