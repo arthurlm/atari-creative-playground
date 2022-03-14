@@ -6,13 +6,23 @@
 linea_t *p_linea_parameter_block = NULL;
 font_hdr_t *p_linea_font_hdr = NULL;
 
-#define _line_a_call(op_code)                                                     \
-    __asm__ volatile(                                                             \
-        "move.l    %0,A0\n"                                                       \
-        "dc.w  " op_code "\n"                                                     \
-        :                                                    /* outputs */        \
-        : "r"(p_linea_parameter_block)                       /* inputs */         \
-        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory" /* side effect on */ \
+// See m68k arch: https://en.wikipedia.org/wiki/Motorola_68000#Architecture
+// data register
+#define D0_D2 "d0", "d1", "d2"
+// address register
+#define A0_A2 "a0", "a1", "a2"
+// condition code register
+#define AND_ASM_CC , "cc"
+// do we need hint for this ;)
+#define AND_ASM_MEMORY , "memory"
+
+#define _line_a_call(op_code)                                         \
+    __asm__ volatile(                                                 \
+        "move.l    %0,A0\n"                                           \
+        "dc.w  " op_code "\n"                                         \
+        :                                        /* outputs */        \
+        : "r"(p_linea_parameter_block)           /* inputs */         \
+        : D0_D2, A0_A2 AND_ASM_CC AND_ASM_MEMORY /* side effect on */ \
     )
 
 void linea_init()
@@ -27,9 +37,7 @@ void linea_init()
         /* inputs */
         :
         /* side effect on */
-        : "d0", "d1", "d2",
-          "a0", "a1", "a2",
-          "cc", "memory");
+        : D0_D2, A0_A2 AND_ASM_CC AND_ASM_MEMORY);
 }
 
 void linea_set_bit_plane(int8_t p1, int8_t p2, int8_t p3, int8_t p4)
