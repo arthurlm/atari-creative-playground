@@ -2,32 +2,47 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <mint/mintbind.h>
+#include <mint/osbind.h>
 
 #include "linea.h"
+#include "video.h"
 
 int main(int argc, char **argv)
 {
-    size_t i, j;
-
+    // Init sub-systems
     linea_init();
+    video_init();
 
-    for (i = 0; i < 16; i++)
-        for (j = 0; j < 160; j++)
-            linea_put_pixel(j, i, i);
-
-    linea_set_bit_plane(1, 1, 1, 1);
+    // Configure Line-A
     linea_set_clip_region(0, 0, 0, 0, 0);
+    linea_set_bit_plane(1, 0, 1, 0);
 
-    linea_draw_rect_filled(50, 60, 0, 0);
-    linea_draw_line(10, 20, 100, 20);
+    int i = 0;
+    int diff = 2;
 
-    // linea_printf();
-
-    // Wait forever
+    // Draw
     while (true)
     {
+        video_clear_screen();
+        video_flip_buffers();
+
+        linea_draw_line(0, i, 319, 200 - i);
+
+        i += diff;
+
+        if (i >= 200 || i <= 0)
+        {
+            diff *= -1;
+        }
+
+        Vsync();
     }
 
+    // Wait forever
+    // while (true)
+    // {
+    // }
+
+    video_quit();
     return 0;
 }

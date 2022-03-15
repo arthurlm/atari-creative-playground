@@ -14,6 +14,8 @@ add_link_options(-Wl,--traditional-format)
 
 include_directories(src/includes)
 add_executable(app.prg
-    src/main.c
     src/linea.c
+    src/main.c
+    src/utils.c
+    src/video.c
 )

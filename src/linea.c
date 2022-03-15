@@ -107,6 +107,13 @@ void linea_draw_rect_filled(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
     // - INVERS 3  : Inverse Transparent (XOR with not(LN_MASK))
     p_linea_parameter_block->wrt_mode = 0;
 
+    // Fill pattern
+    uint16_t pattern[] = {
+        0x1000,
+    };
+    p_linea_parameter_block->patptr = pattern;
+    p_linea_parameter_block->patmsk = 0;
+
     _line_a_call("0xA005");
 }
 
