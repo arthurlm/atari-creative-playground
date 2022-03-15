@@ -1,13 +1,15 @@
 #include "video.h"
 
-#include "linea.h"
-#include "utils.h"
-
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 
-#include <mint/osbind.h>
+#include <osbind.h>
+
+#include "config.h"
+
+#include "linea.h"
+#include "utils.h"
 
 void *_v_framebuffer_log = NULL;
 void *_v_framebuffer_phy = NULL;
@@ -122,18 +124,22 @@ void video_clear_screen()
 
 void video_print_all_addr()
 {
+#ifdef ENABLE_STDLIB
     printf("logical addr : %p\n\r", _v_framebuffer_log);
     printf("physical addr: %p\n\r", _v_framebuffer_phy);
     printf("virtual addr : %p\n\r", _v_framebuffer_vir);
     printf("\r\n");
     printf("FB active: %p\n\r", (void *)_v_framebuffer_active);
     printf("FB hidden: %p\n\r", (void *)_v_framebuffer_hidden);
+#endif // ENABLE_STDLIB
 }
 
 void video_print_active_addr()
 {
+#ifdef ENABLE_STDLIB
     printf("active=%p fb=[%p %p]\r",
            _v_framebuffer_active,
            _v_framebuffer_log,
            _v_framebuffer_vir);
+#endif // ENABLE_STDLIB
 }

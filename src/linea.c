@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#include "config.h"
+
 linea_t *p_linea_parameter_block = NULL;
 font_hdr_t *p_linea_font_hdr = NULL;
 
@@ -134,6 +136,7 @@ void linea_set_mouse_visible(int8_t visible)
 
 void linea_printf()
 {
+#ifdef ENABLE_STDLIB
     printf("===== LINE A CONTENT ====\n");
     printf("p_linea_parameter_block: %p\n", p_linea_parameter_block);
     printf("p_linea_font_hdr: %p\n", p_linea_font_hdr);
@@ -205,4 +208,5 @@ void linea_printf()
     }
 
     printf("=========================\n");
+#endif // ENABLE_STDLIB
 }

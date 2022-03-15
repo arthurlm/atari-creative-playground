@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <mint/osbind.h>
+#include <osbind.h>
 
 #include "linea.h"
 #include "video.h"
