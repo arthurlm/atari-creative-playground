@@ -183,7 +183,7 @@ void linea_draw_rect_filled(int16_t x1, int16_t y1, int16_t x2, int16_t y2);
  * @brief Update mouse visibility.
  *
  * @param visible Set visible / hidden.
- * @see https://freemint.github.io/tos.hyp/en/linea_showmouse.html#Bindings_20for_20show_mouse
+ * @see https://freemint.github.io/tos.hyp/en/linea_showmouse.html
  * @see https://freemint.github.io/tos.hyp/en/linea_hidemouse.html
  */
 void linea_set_mouse_visible(int8_t visible);
