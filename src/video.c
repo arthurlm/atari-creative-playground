@@ -6,8 +6,6 @@
 
 #include <osbind.h>
 
-#include "config.h"
-
 #include "linea.h"
 #include "utils.h"
 

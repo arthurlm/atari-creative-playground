@@ -13,6 +13,8 @@ add_compile_options(-m68000)
 add_link_options(-Wl,--traditional-format)
 
 include_directories(src/includes)
+add_compile_definitions(ENABLE_STDLIB)
+
 add_executable(app.prg
     src/linea.c
     src/main.c

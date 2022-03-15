@@ -3,8 +3,6 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "config.h"
-
 linea_t *p_linea_parameter_block = NULL;
 font_hdr_t *p_linea_font_hdr = NULL;
 
