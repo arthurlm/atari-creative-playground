@@ -20,22 +20,26 @@ uint16_t _v_saved_mode;
 uint16_t _v_saved_palette[16];
 
 uint16_t _v_palette[16] = {
-    0x000,
-    0x300,
-    0x030,
-    0x003,
-    0x330,
-    0x033,
-    0x303,
-    0x333,
-    0x000,
-    0x700,
-    0x070,
-    0x007,
-    0x770,
-    0x077,
-    0x707,
-    0x777,
+    0x000, // 0b0000 BLACK
+
+    0x300, // 0b0001 DARK_RED
+    0x030, // 0b0010 DARK_GREEN
+    0x003, // 0b0011 DARK_BLUE
+    0x330, // 0b0100
+    0x033, // 0b0101
+    0x303, // 0b0110
+
+    0x333, // 0b0111 GRAY
+    0x000, // 0b1000 LIGHT_BLACK <= This can be improved
+
+    0x700, // 0b1001 LIGHT_RED
+    0x070, // 0b1010 LIGHT_GREEN
+    0x007, // 0b1011 LIGHT_BLUE
+    0x770, // 0b1100
+    0x077, // 0b1101
+    0x707, // 0b1110
+
+    0x777, // 0b1111 WHITE
 };
 
 static void _video_clear_fb(uint16_t *framebuffer)
