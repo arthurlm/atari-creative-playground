@@ -116,12 +116,15 @@ int8_t Matrix_set_identity(Matrix_t *mat)
     _ENSURE_MATRIX_PTR_VALID(mat);
     _ENSURE_MATRIX_SQUARED(mat);
 
-    for (uint16_t h = 0; h < mat->height; h++)
+    uint16_t length = _MATPTR_LENGTH(mat);
+    for (uint16_t i = 0; i < length; i++)
     {
-        for (uint16_t w = 0; w < mat->width; w++)
-        {
-            MATPTR_AT_UNSAFE(mat, w, h) = (w == h) ? 1 : 0;
-        }
+        mat->data[i] = 0;
+    }
+
+    for (uint16_t i = 0; i < mat->width; i++)
+    {
+        MATPTR_AT_UNSAFE(mat, i, i) = 1;
     }
 
     return ERR_NO;
