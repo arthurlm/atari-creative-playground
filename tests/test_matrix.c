@@ -219,7 +219,7 @@ void test_matrix_add_const()
     ASSERT_EQUALS(Matrix_free(&mat), ERR_NO);
 }
 
-void test_matrix_scale()
+void test_matrix_mul()
 {
     Matrix_t mat = Matrix_alloc(2, 4);
     Matrix_fill(&mat, 5);
@@ -227,8 +227,8 @@ void test_matrix_scale()
     MAT_AT_UNSAFE(mat, 0, 3) = 10;
     MAT_AT_UNSAFE(mat, 1, 2) = -3;
 
-    ASSERT_EQUALS(Matrix_scale(NULL, 2), ERR_MATDATA);
-    ASSERT_EQUALS(Matrix_scale(&mat, 2), ERR_NO);
+    ASSERT_EQUALS(Matrix_mul(NULL, 2), ERR_MATDATA);
+    ASSERT_EQUALS(Matrix_mul(&mat, 2), ERR_NO);
 
     ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 0, 0), 10);
     ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 0, 1), -36);
@@ -238,6 +238,29 @@ void test_matrix_scale()
     ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 1), 10);
     ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 2), -6);
     ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 3), 10);
+
+    ASSERT_EQUALS(Matrix_free(&mat), ERR_NO);
+}
+
+void test_matrix_div()
+{
+    Matrix_t mat = Matrix_alloc(2, 4);
+    Matrix_fill(&mat, 5);
+    MAT_AT_UNSAFE(mat, 0, 1) = -18;
+    MAT_AT_UNSAFE(mat, 0, 3) = 10;
+    MAT_AT_UNSAFE(mat, 1, 2) = -3;
+
+    ASSERT_EQUALS(Matrix_div(NULL, 2), ERR_MATDATA);
+    ASSERT_EQUALS(Matrix_div(&mat, 2), ERR_NO);
+
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 0, 0), 2);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 0, 1), -9);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 0, 2), 2);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 0, 3), 5);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 0), 2);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 1), 2);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 2), -1);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(mat, 1, 3), 2);
 
     ASSERT_EQUALS(Matrix_free(&mat), ERR_NO);
 }
@@ -305,6 +328,25 @@ void test_matrix_dot_data()
     ASSERT_EQUALS(Matrix_free(&out2), ERR_NO);
 }
 
+void test_matrix_set_point()
+{
+    Matrix_t a = Matrix_alloc(1, 4);
+    Matrix_t b = Matrix_alloc(1, 3);
+
+    ASSERT_EQUALS(Matrix_set_point(NULL, 0, 1, 2, 3), ERR_MATDATA);
+    ASSERT_EQUALS(Matrix_set_point(&b, 0, 1, 2, 3), ERR_MATSHAPE);
+    ASSERT_EQUALS(Matrix_set_point(&a, 5, 1, 2, 3), ERR_MATSHAPE);
+
+    ASSERT_EQUALS(Matrix_set_point(&a, 0, 10, 20, 30), ERR_NO);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 0), 10);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 1), 20);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 2), 30);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 3), 0);
+
+    ASSERT_EQUALS(Matrix_free(&a), ERR_NO);
+    ASSERT_EQUALS(Matrix_free(&b), ERR_NO);
+}
+
 // Main ============================================================================================
 
 int main()
@@ -319,9 +361,11 @@ int main()
     TEST_CASE_RUN(test_matrix_shape_equal);
     TEST_CASE_RUN(test_matrix_transpose);
     TEST_CASE_RUN(test_matrix_add_const);
-    TEST_CASE_RUN(test_matrix_scale);
+    TEST_CASE_RUN(test_matrix_mul);
+    TEST_CASE_RUN(test_matrix_div);
     TEST_CASE_RUN(test_matrix_dot_shape);
     TEST_CASE_RUN(test_matrix_dot_data);
+    TEST_CASE_RUN(test_matrix_set_point);
 
     return 0;
 }

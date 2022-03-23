@@ -36,6 +36,13 @@ Matrix_t Matrix_alloc(uint16_t height, uint16_t width);
 int8_t Matrix_copy(Matrix_t *src, Matrix_t *dst);
 
 /**
+ * Transfer src to dst.
+ *
+ * dst need to be allocated first.
+ */
+int8_t Matrix_transfer(Matrix_t *src, Matrix_t *dst);
+
+/**
  * Free struct.
  */
 int8_t Matrix_free(Matrix_t *mat);
@@ -73,9 +80,14 @@ int8_t Matrix_transpose(Matrix_t *src, Matrix_t *dst);
 int8_t Matrix_add_const(Matrix_t *mat, int16_t value);
 
 /**
- * Scale all matrix elements.
+ * Multiply all matrix elements.
  */
-int8_t Matrix_scale(Matrix_t *mat, int16_t value);
+int8_t Matrix_mul(Matrix_t *mat, int16_t value);
+
+/**
+ * Divide all matrix elements.
+ */
+int8_t Matrix_div(Matrix_t *mat, int16_t value);
 
 /**
  * @brief Perform dot product of A and B.
@@ -86,5 +98,17 @@ int8_t Matrix_scale(Matrix_t *mat, int16_t value);
  * @return int8_t Status code
  */
 int8_t Matrix_dot(Matrix_t *a, Matrix_t *b, Matrix_t *out);
+
+/**
+ * Set row as a coordonate point.
+ */
+int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16_t z);
+
+/**
+ * Project space to plane using f as focale parameter.
+ *
+ * @param f Camera defintion
+ */
+int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f);
 
 #endif // _MATRIX_H_

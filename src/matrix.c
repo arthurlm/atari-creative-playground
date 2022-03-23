@@ -63,6 +63,13 @@ int8_t Matrix_copy(Matrix_t *src, Matrix_t *dst)
     _ENSURE_MATRIX_PTR_VALID(src);
 
     *dst = Matrix_alloc(src->height, src->width);
+
+    return Matrix_transfer(src, dst);
+}
+
+int8_t Matrix_transfer(Matrix_t *src, Matrix_t *dst)
+{
+    _ENSURE_MATRIX_PTR_VALID(src);
     _ENSURE_MATRIX_PTR_VALID(dst);
 
     uint16_t length = _MATPTR_LENGTH(src);
@@ -157,7 +164,7 @@ int8_t Matrix_add_const(Matrix_t *mat, int16_t value)
     return ERR_NO;
 }
 
-int8_t Matrix_scale(Matrix_t *mat, int16_t value)
+int8_t Matrix_mul(Matrix_t *mat, int16_t value)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
 
@@ -165,6 +172,19 @@ int8_t Matrix_scale(Matrix_t *mat, int16_t value)
     for (uint16_t i = 0; i < length; i++)
     {
         mat->data[i] *= value;
+    }
+
+    return ERR_NO;
+}
+
+int8_t Matrix_div(Matrix_t *mat, int16_t value)
+{
+    _ENSURE_MATRIX_PTR_VALID(mat);
+
+    uint16_t length = _MATPTR_LENGTH(mat);
+    for (uint16_t i = 0; i < length; i++)
+    {
+        mat->data[i] /= value;
     }
 
     return ERR_NO;
@@ -193,6 +213,44 @@ int8_t Matrix_dot(Matrix_t *a, Matrix_t *b, Matrix_t *out)
 
             MATPTR_AT_UNSAFE(out, i, j) = v;
         }
+    }
+
+    return ERR_NO;
+}
+
+int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16_t z)
+{
+    _ENSURE_MATRIX_PTR_VALID(mat);
+    if (mat->width != 4 || row >= mat->height)
+    {
+        return ERR_MATSHAPE;
+    }
+
+    MATPTR_AT_UNSAFE(mat, row, 0) = x;
+    MATPTR_AT_UNSAFE(mat, row, 1) = y;
+    MATPTR_AT_UNSAFE(mat, row, 2) = z;
+    MATPTR_AT_UNSAFE(mat, row, 3) = 0;
+
+    return ERR_NO;
+}
+
+int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f)
+{
+    _ENSURE_MATRIX_PTR_VALID(space);
+    _ENSURE_MATRIX_PTR_VALID(plane);
+    if (plane->height != space->height || plane->width != 2 || space->width < 3)
+    {
+        return ERR_MATSHAPE;
+    }
+
+    for (uint16_t h = 0; h < space->height; h++)
+    {
+        int16_t s = f / MATPTR_AT_UNSAFE(space, h, 2);
+        int16_t x = s * MATPTR_AT_UNSAFE(space, h, 0);
+        int16_t y = s * MATPTR_AT_UNSAFE(space, h, 1);
+
+        MATPTR_AT_UNSAFE(plane, h, 0) = x;
+        MATPTR_AT_UNSAFE(plane, h, 1) = y;
     }
 
     return ERR_NO;
