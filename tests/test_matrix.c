@@ -341,7 +341,7 @@ void test_matrix_set_point()
     ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 0), 10);
     ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 1), 20);
     ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 2), 30);
-    ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 3), 0);
+    ASSERT_EQUALS(MAT_AT_UNSAFE(a, 0, 3), 1);
 
     ASSERT_EQUALS(Matrix_free(&a), ERR_NO);
     ASSERT_EQUALS(Matrix_free(&b), ERR_NO);

@@ -232,7 +232,7 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16
     MATPTR_AT_UNSAFE(mat, row, 0) = x;
     MATPTR_AT_UNSAFE(mat, row, 1) = y;
     MATPTR_AT_UNSAFE(mat, row, 2) = z;
-    MATPTR_AT_UNSAFE(mat, row, 3) = 0;
+    MATPTR_AT_UNSAFE(mat, row, 3) = 1;
 
     return ERR_NO;
 }
