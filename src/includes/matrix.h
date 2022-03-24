@@ -107,8 +107,11 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16
 /**
  * Project space to plane using f as focale parameter.
  *
+ * @param space Input space
+ * @param plane Output plane
  * @param f Camera defintion
+ * @param f Divider to use in Z scale computation
  */
-int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f);
+int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_size);
 
 #endif // _MATRIX_H_

@@ -237,7 +237,7 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16
     return ERR_NO;
 }
 
-int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f)
+int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_size)
 {
     _ENSURE_MATRIX_PTR_VALID(space);
     _ENSURE_MATRIX_PTR_VALID(plane);
@@ -248,7 +248,7 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f)
 
     for (uint16_t h = 0; h < space->height; h++)
     {
-        int16_t s = f / MATPTR_AT_UNSAFE(space, h, 2);
+        int16_t s = (MATPTR_AT_UNSAFE(space, h, 2) / grid_size) * f;
         int16_t x = s * MATPTR_AT_UNSAFE(space, h, 0);
         int16_t y = s * MATPTR_AT_UNSAFE(space, h, 1);
 
