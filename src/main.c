@@ -23,9 +23,19 @@
         }                            \
     }
 
+#define DRAW_CUBE_SCREEN_SEGMENT(P1, P2)                   \
+    {                                                      \
+        int16_t x1 = MAT_AT_UNSAFE(coord_screen, (P1), 0); \
+        int16_t y1 = MAT_AT_UNSAFE(coord_screen, (P1), 1); \
+        int16_t x2 = MAT_AT_UNSAFE(coord_screen, (P2), 0); \
+        int16_t y2 = MAT_AT_UNSAFE(coord_screen, (P2), 1); \
+        linea_draw_line(x1, y1, x2, y2);                   \
+    }
+
 // Define globals ==================================================================================
 
 Matrix_t coord_space;
+Matrix_t camera_pos;
 Matrix_t coord_proj;
 Matrix_t coord_screen;
 
@@ -34,53 +44,66 @@ Matrix_t coord_screen;
 void scene_setup()
 {
     coord_space = Matrix_alloc(8, 4);
-    coord_proj = Matrix_alloc(8, 2);
+    camera_pos = Matrix_alloc(4, 4);
+    coord_proj = Matrix_alloc(8, 4);
     coord_screen = Matrix_alloc(8, 2);
 
     if (coord_space.data == NULL ||
+        camera_pos.data == NULL ||
         coord_proj.data == NULL ||
         coord_screen.data == NULL)
     {
         panic("Fail to init matrix");
     }
 
-    CHECK_CALL(Matrix_set_point(&coord_space, 0, -1, -1, -1));
-    CHECK_CALL(Matrix_set_point(&coord_space, 1, +1, -1, -1));
-    CHECK_CALL(Matrix_set_point(&coord_space, 2, +1, +1, -1));
-    CHECK_CALL(Matrix_set_point(&coord_space, 3, -1, +1, -1));
+    // Set cube coord
+    // NOTE: Scale to make integer computation easyer
+    CHECK_CALL(Matrix_set_point(&coord_space, 0, -1000, -1000, -1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 1, +1000, -1000, -1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 2, +1000, +1000, -1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 3, -1000, +1000, -1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 4, -1000, -1000, +1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 5, +1000, -1000, +1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 6, +1000, +1000, +1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 7, -1000, +1000, +1000));
 
-    CHECK_CALL(Matrix_set_point(&coord_space, 4, -1, -1, +1));
-    CHECK_CALL(Matrix_set_point(&coord_space, 5, +1, -1, +1));
-    CHECK_CALL(Matrix_set_point(&coord_space, 6, +1, +1, +1));
-    CHECK_CALL(Matrix_set_point(&coord_space, 7, -1, +1, +1));
-
-    CHECK_CALL(Matrix_mul(&coord_space, FRACTIONAL_NUMBER_PRECISION_SCALE));
+    // Set camera pos translate matrix
+    CHECK_CALL(Matrix_set_identity(&camera_pos));
+    MAT_AT_UNSAFE(camera_pos, 3, 2) = -3000;
 }
 
 void scene_update()
 {
+    CHECK_CALL(Matrix_dot(&coord_space, &camera_pos, &coord_proj));
+
     // Project matrix to screen
-    CHECK_CALL(Matrix_project(&coord_space, &coord_screen, CAMERA_F));
+    CHECK_CALL(Matrix_project(&coord_proj, &coord_screen, CAMERA_F, 1000));
 
     // Convert space to screen coord
     // NOTE: bellow call are computed from screen size and FRACTIONAL_NUMBER_PRECISION_SCALE
-    CHECK_CALL(Matrix_add_const(&coord_screen, 10000));
-    CHECK_CALL(Matrix_div(&coord_screen, 100));
+    for (uint16_t h = 0; h < coord_screen.height; h++)
+    {
+        MAT_AT_UNSAFE(coord_screen, h, 0) = ((MAT_AT_UNSAFE(coord_screen, h, 0) + 4000) / 80) + 120;
+        MAT_AT_UNSAFE(coord_screen, h, 1) = ((MAT_AT_UNSAFE(coord_screen, h, 1) + 4000) / 80) + 50;
+    }
 }
 
 void scene_draw()
 {
-    static int i = 0;
-    static int diff = 2;
+    DRAW_CUBE_SCREEN_SEGMENT(0, 1);
+    DRAW_CUBE_SCREEN_SEGMENT(1, 2);
+    DRAW_CUBE_SCREEN_SEGMENT(2, 3);
+    DRAW_CUBE_SCREEN_SEGMENT(3, 0);
 
-    linea_draw_line(0, i, 319, 200 - i);
+    DRAW_CUBE_SCREEN_SEGMENT(4, 5);
+    DRAW_CUBE_SCREEN_SEGMENT(5, 6);
+    DRAW_CUBE_SCREEN_SEGMENT(6, 7);
+    DRAW_CUBE_SCREEN_SEGMENT(7, 4);
 
-    i += diff;
-
-    if (i >= 200 || i <= 0)
-    {
-        diff *= -1;
-    }
+    DRAW_CUBE_SCREEN_SEGMENT(0, 4);
+    DRAW_CUBE_SCREEN_SEGMENT(1, 5);
+    DRAW_CUBE_SCREEN_SEGMENT(2, 6);
+    DRAW_CUBE_SCREEN_SEGMENT(3, 7);
 }
 
 // Define main =====================================================================================
