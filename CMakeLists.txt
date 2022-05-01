@@ -30,6 +30,7 @@ add_executable(app.prg
     src/linea.c
     src/main.c
     src/matrix.c
+    src/trigo.c
     src/utils.c
     src/video.c
 )
