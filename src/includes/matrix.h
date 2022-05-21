@@ -141,4 +141,16 @@ int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta);
  */
 int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta);
 
+#ifdef ENABLE_STDLIB
+
+/**
+ * Print matrix on screen
+ *
+ * @param mat Input matrix
+ * @return int8_t Status code
+ */
+int8_t Matrix_dump(Matrix_t *mat);
+
+#endif // ENABLE_STDLIB
+
 #endif // _MATRIX_H_

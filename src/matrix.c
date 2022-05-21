@@ -2,6 +2,10 @@
 
 #include <stdlib.h>
 
+#ifdef ENABLE_STDLIB
+#include <stdio.h>
+#endif // ENABLE_STDLIB
+
 #include "trigo.h"
 
 #define _ENSURE_VALID_PTR(PTR)  \
@@ -365,3 +369,26 @@ int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta)
 
     return ERR_NO;
 }
+
+#ifdef ENABLE_STDLIB
+
+int8_t Matrix_dump(Matrix_t *mat)
+{
+    _ENSURE_MATRIX_PTR_VALID(mat);
+
+    printf("[\r\n");
+    for (uint16_t i = 0; i < mat->height; i++)
+    {
+        for (uint16_t j = 0; j < mat->width; j++)
+        {
+            printf("%d, ", MATPTR_AT_UNSAFE(mat, i, j));
+        }
+
+        printf("\r\n");
+    }
+    printf("]\r\n");
+
+    return ERR_NO;
+}
+
+#endif // ENABLE_STDLIB
