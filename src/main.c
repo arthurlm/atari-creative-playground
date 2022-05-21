@@ -68,6 +68,10 @@ Matrix_t rot_z;
 
 Matrix_t tmp;
 
+uint16_t rotate_x = 0;
+uint16_t rotate_y = 0;
+uint16_t rotate_z = 0;
+
 uint16_t counter_interrupt = 0;
 uint16_t counter_frame = 0;
 
@@ -141,13 +145,9 @@ inline void rot_space(Matrix_t *rot)
 void scene_update()
 {
     // Recompute rotation matrix based on frame count
-    uint16_t rx = 6 * counter_interrupt;
-    uint16_t ry = 9 * counter_interrupt;
-    uint16_t rz = 12 * counter_interrupt;
-
-    CHECK_CALL(Matrix_make_partial_rot_x(&rot_x, rx));
-    CHECK_CALL(Matrix_make_partial_rot_y(&rot_y, ry));
-    CHECK_CALL(Matrix_make_partial_rot_z(&rot_z, rz));
+    CHECK_CALL(Matrix_make_partial_rot_x(&rot_x, rotate_x));
+    CHECK_CALL(Matrix_make_partial_rot_y(&rot_y, rotate_y));
+    CHECK_CALL(Matrix_make_partial_rot_z(&rot_z, rotate_z));
 
     // Apply rotation to space
     CHECK_CALL(Matrix_copy(&coord_space_original, &coord_space));
@@ -197,8 +197,12 @@ void __attribute__((interrupt)) vector_hblank()
         flag_new_frame_ready = 0;
     }
 
+    rotate_x = (rotate_x + 6) % sizeof_tables();
+    rotate_y = (rotate_y + 9) % sizeof_tables();
+    rotate_z = (rotate_z + 12) % sizeof_tables();
+
     // Update counter (debug purposes)
-    counter_interrupt = (counter_interrupt + 1) % sizeof_tables();
+    counter_interrupt++;
 
     // Mark interruption address as terminated
     *(INTERRUPTION_SERVICE_ADDRESS) &= END_OF_INTERRUPT_TIMER_HBLANK;
