@@ -14,12 +14,14 @@
 
 // Define constant =================================================================================
 
-#define CAMERA_F 4
+#define GRID_SIZE 1000
+
+#define CAMERA_F 8
+#define CAMERA_NEAR (-1.8 * GRID_SIZE)
+#define CAMERA_FAR (2.5 * GRID_SIZE)
 #define CAMERA_X 0
 #define CAMERA_Y 0
 #define CAMERA_Z -3
-
-#define GRID_SIZE 1000
 
 #ifdef ENABLE_FAST_CALL
 #define CHECK_CALL(XX) \
@@ -36,13 +38,19 @@
     }
 #endif // ENABLE_FAST_CALL
 
-#define DRAW_CUBE_SCREEN_SEGMENT(P1, P2)                   \
-    {                                                      \
-        int16_t x1 = MAT_AT_UNSAFE(coord_screen, (P1), 0); \
-        int16_t y1 = MAT_AT_UNSAFE(coord_screen, (P1), 1); \
-        int16_t x2 = MAT_AT_UNSAFE(coord_screen, (P2), 0); \
-        int16_t y2 = MAT_AT_UNSAFE(coord_screen, (P2), 1); \
-        linea_draw_line(x1, y1, x2, y2);                   \
+#define DRAW_CUBE_SCREEN_SEGMENT(P1, P2)                       \
+    {                                                          \
+        matdata_t z1 = MAT_AT_UNSAFE(coord_space, (P1), 2);    \
+        matdata_t z2 = MAT_AT_UNSAFE(coord_space, (P2), 2);    \
+        if (CAMERA_NEAR < z1 && z1 < CAMERA_FAR &&             \
+            CAMERA_NEAR < z1 && z2 < CAMERA_FAR)               \
+        {                                                      \
+            int16_t x1 = MAT_AT_UNSAFE(coord_screen, (P1), 0); \
+            int16_t y1 = MAT_AT_UNSAFE(coord_screen, (P1), 1); \
+            int16_t x2 = MAT_AT_UNSAFE(coord_screen, (P2), 0); \
+            int16_t y2 = MAT_AT_UNSAFE(coord_screen, (P2), 1); \
+            linea_draw_line(x1, y1, x2, y2);                   \
+        }                                                      \
     }
 
 // Define globals ==================================================================================
