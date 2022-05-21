@@ -67,6 +67,11 @@ Matrix_t rot_z;
 
 Matrix_t tmp;
 
+int counter_interrupt = 0;
+int counter_frame = 0;
+
+int flag_new_frame_ready = 0;
+
 // Define utils ====================================================================================
 
 #define SWAP_MATRIX(XXX, YYY) \
@@ -168,11 +173,6 @@ void scene_draw()
 }
 
 // Define main =====================================================================================
-
-int counter_interrupt = 0;
-int counter_frame = 0;
-
-int flag_new_frame_ready = 0;
 
 void __attribute__((interrupt)) vector_hblank()
 {
