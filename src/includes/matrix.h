@@ -13,7 +13,7 @@
 #define MAT_AT_UNSAFE(MAT, II, JJ) (MAT).data[(II) * (MAT).width + (JJ)]
 #define MATPTR_AT_UNSAFE(MAT, II, JJ) (MAT)->data[(II) * (MAT)->width + (JJ)]
 
-typedef int16_t matdata_t;
+typedef int32_t matdata_t;
 
 typedef struct Matrix
 {
