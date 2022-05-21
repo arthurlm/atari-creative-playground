@@ -3,8 +3,10 @@
 
 #include <stdint.h>
 
-int16_t float_scale();
-int16_t soft_cos(int16_t value);
-int16_t soft_sin(int16_t value);
+typedef int16_t softfloat_t;
+
+softfloat_t float_scale();
+softfloat_t soft_cos(softfloat_t value);
+softfloat_t soft_sin(softfloat_t value);
 
 #endif // _TRIGO_H_
