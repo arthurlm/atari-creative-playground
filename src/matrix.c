@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+#include "trigo.h"
+
 #define _ENSURE_VALID_PTR(PTR)  \
     {                           \
         if ((PTR) == NULL)      \
@@ -255,6 +257,111 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_
         MATPTR_AT_UNSAFE(plane, h, 0) = x;
         MATPTR_AT_UNSAFE(plane, h, 1) = y;
     }
+
+    return ERR_NO;
+}
+
+int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta)
+{
+    _ENSURE_MATRIX_PTR_VALID(mat);
+    if (mat->width != 4 || mat->height != 4)
+    {
+        return ERR_MATSHAPE;
+    }
+
+    int16_t cosT = soft_cos(theta);
+    int16_t sinT = soft_sin(theta);
+
+    //              (mat, row, col) = v
+    MATPTR_AT_UNSAFE(mat, 0, 0) = float_scale();
+    MATPTR_AT_UNSAFE(mat, 0, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 0, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 0, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 1, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 1, 1) = cosT;
+    MATPTR_AT_UNSAFE(mat, 1, 2) = -sinT;
+    MATPTR_AT_UNSAFE(mat, 1, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 2, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 2, 1) = sinT;
+    MATPTR_AT_UNSAFE(mat, 2, 2) = cosT;
+    MATPTR_AT_UNSAFE(mat, 2, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 3, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 3) = float_scale();
+
+    return ERR_NO;
+}
+
+int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta)
+{
+    _ENSURE_MATRIX_PTR_VALID(mat);
+    if (mat->width != 4 || mat->height != 4)
+    {
+        return ERR_MATSHAPE;
+    }
+
+    int16_t cosT = soft_cos(theta);
+    int16_t sinT = soft_sin(theta);
+
+    //              (mat, row, col) = v
+    MATPTR_AT_UNSAFE(mat, 0, 0) = cosT;
+    MATPTR_AT_UNSAFE(mat, 0, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 0, 2) = sinT;
+    MATPTR_AT_UNSAFE(mat, 0, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 1, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 1, 1) = float_scale();
+    MATPTR_AT_UNSAFE(mat, 1, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 1, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 2, 0) = -sinT;
+    MATPTR_AT_UNSAFE(mat, 2, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 2, 2) = cosT;
+    MATPTR_AT_UNSAFE(mat, 2, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 3, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 3) = float_scale();
+
+    return ERR_NO;
+}
+
+int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta)
+{
+    _ENSURE_MATRIX_PTR_VALID(mat);
+    if (mat->width != 4 || mat->height != 4)
+    {
+        return ERR_MATSHAPE;
+    }
+
+    int16_t cosT = soft_cos(theta);
+    int16_t sinT = soft_sin(theta);
+
+    //              (mat, row, col) = v
+    MATPTR_AT_UNSAFE(mat, 0, 0) = cosT;
+    MATPTR_AT_UNSAFE(mat, 0, 1) = -sinT;
+    MATPTR_AT_UNSAFE(mat, 0, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 0, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 1, 0) = sinT;
+    MATPTR_AT_UNSAFE(mat, 1, 1) = cosT;
+    MATPTR_AT_UNSAFE(mat, 1, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 1, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 2, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 2, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 2, 2) = float_scale();
+    MATPTR_AT_UNSAFE(mat, 2, 3) = 0;
+
+    MATPTR_AT_UNSAFE(mat, 3, 0) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 1) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 2) = 0;
+    MATPTR_AT_UNSAFE(mat, 3, 3) = float_scale();
 
     return ERR_NO;
 }

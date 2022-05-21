@@ -2,6 +2,7 @@ enable_testing()
 
 set(TEST_SOURCES
     ../src/matrix.c
+    ../src/trigo.c
     )
 
 add_executable(TestMatrix.tos test_matrix.c "${TEST_SOURCES}")

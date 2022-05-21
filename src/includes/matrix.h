@@ -114,4 +114,31 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16
  */
 int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_size);
 
+/**
+ * Init rotation matrix on X axis
+ *
+ * @param mat Input matrix
+ * @param theta Angle
+ * @return int8_t Status code
+ */
+int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta);
+
+/**
+ * Init rotation matrix on Y axis
+ *
+ * @param mat Input matrix
+ * @param theta Angle
+ * @return int8_t Status code
+ */
+int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta);
+
+/**
+ * Init rotation matrix on Z axis
+ *
+ * @param mat Input matrix
+ * @param theta Angle
+ * @return int8_t Status code
+ */
+int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta);
+
 #endif // _MATRIX_H_
