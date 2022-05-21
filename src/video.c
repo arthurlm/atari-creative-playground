@@ -116,7 +116,7 @@ void video_flip_buffers()
     _v_framebuffer_hidden = _v_framebuffer_active;
     _v_framebuffer_active = temp;
 
-    Setscreen(_v_framebuffer_active, _v_framebuffer_active, -1);
+    video_set_draw_buffer_primary();
 }
 
 void video_clear_screen()
@@ -144,4 +144,14 @@ void video_print_active_addr()
            _v_framebuffer_log,
            _v_framebuffer_vir);
 #endif // ENABLE_STDLIB
+}
+
+void video_set_draw_buffer_primary()
+{
+    Setscreen(_v_framebuffer_active, _v_framebuffer_active, -1);
+}
+
+void video_set_draw_buffer_hidden()
+{
+    Setscreen(_v_framebuffer_hidden, _v_framebuffer_hidden, -1);
 }

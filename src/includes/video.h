@@ -49,4 +49,14 @@ void video_print_all_addr();
  */
 void video_print_active_addr();
 
+/**
+ * Configure main buffer to primary buffer.
+ */
+void video_set_draw_buffer_primary();
+
+/**
+ * Configure main buffer to hidden buffer.
+ */
+void video_set_draw_buffer_hidden();
+
 #endif // _CONFIG_H_
