@@ -1690,12 +1690,12 @@ int16_t sizeof_tables()
     return 12566;
 }
 
-softfloat_t soft_cos(softfloat_t value)
+softfloat_t soft_cos(uint16_t value)
 {
     return _cos_table[value % 12566];
 }
 
-softfloat_t soft_sin(softfloat_t value)
+softfloat_t soft_sin(uint16_t value)
 {
     return _sin_table[value % 12566];
 }
