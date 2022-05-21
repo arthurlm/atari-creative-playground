@@ -169,6 +169,26 @@ void scene_draw()
 
 // Define main =====================================================================================
 
+int counter_interrupt = 0;
+int counter_frame = 0;
+
+int flag_new_frame_ready = 0;
+
+void __attribute__((interrupt)) vector_hblank()
+{
+    if (flag_new_frame_ready)
+    {
+        video_flip_buffers();
+        flag_new_frame_ready = 0;
+    }
+
+    // Update counter (debug purposes)
+    counter_interrupt++;
+
+    // Mark interruption address as terminated
+    *(INTERRUPTION_SERVICE_ADDRESS) &= END_OF_INTERRUPT_TIMER_HBLANK;
+}
+
 int main(int argc, char **argv)
 {
     // Init sub-systems
@@ -182,22 +202,29 @@ int main(int argc, char **argv)
     // Setup globals
     scene_setup();
 
+    // Setup interrupt
+    Xbtimer(TIMER_HBLANK, V_SCREEN_HEIGHT, 0, vector_hblank);
+
     // Draw
     while (true)
     {
-        video_clear_screen();
-        video_flip_buffers();
+        if (!flag_new_frame_ready)
+        {
+            video_clear_screen();
+
+            video_set_draw_buffer_hidden();
+            scene_draw();
+            video_set_draw_buffer_primary();
+
+            flag_new_frame_ready = 1;
+        }
 
         scene_update();
-        scene_draw();
 
-        Vsync();
+        // Update counter (debug purposes)
+        counter_frame++;
+        // printf("interupt=%d, local=%d\r", counter_interrupt / 50, counter_frame);
     }
-
-    // Wait forever
-    // while (true)
-    // {
-    // }
 
     video_quit();
     return 0;
