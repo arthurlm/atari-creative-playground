@@ -14,9 +14,9 @@
 
 // Define constant =================================================================================
 
-#define GRID_SIZE 1000
+#define GRID_SIZE 100000
 
-#define CAMERA_F 8
+#define CAMERA_F 7
 #define CAMERA_NEAR (-1.8 * GRID_SIZE)
 #define CAMERA_FAR (2.5 * GRID_SIZE)
 #define CAMERA_X 0
