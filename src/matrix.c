@@ -381,7 +381,12 @@ int8_t Matrix_dump(Matrix_t *mat)
     {
         for (uint16_t j = 0; j < mat->width; j++)
         {
-            printf("%d, ", MATPTR_AT_UNSAFE(mat, i, j));
+            matdata_t v = MATPTR_AT_UNSAFE(mat, i, j);
+            if (v >= 0)
+            {
+                printf("+");
+            }
+            printf("%d, ", (int)(v));
         }
 
         printf("\r\n");
