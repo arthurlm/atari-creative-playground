@@ -112,9 +112,9 @@ void scene_setup()
     CHECK_CALL(Matrix_set_point(&coord_space, 5, +1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
     CHECK_CALL(Matrix_set_point(&coord_space, 6, +1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
     CHECK_CALL(Matrix_set_point(&coord_space, 7, -1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
-    CHECK_CALL(Matrix_make_rot_x(&rot_x, 15));
+    CHECK_CALL(Matrix_make_rot_x(&rot_x, 20));
     CHECK_CALL(Matrix_make_rot_y(&rot_y, 15));
-    CHECK_CALL(Matrix_make_rot_z(&rot_z, 15));
+    CHECK_CALL(Matrix_make_rot_z(&rot_z, 25));
 
     // Set camera pos translate matrix
     CHECK_CALL(Matrix_set_identity(&camera_pos));
@@ -123,15 +123,18 @@ void scene_setup()
     MAT_AT_UNSAFE(camera_pos, 3, 2) = CAMERA_Z * GRID_SIZE;
 }
 
+inline void rot_space(Matrix_t *rot)
+{
+    CHECK_CALL(Matrix_dot(&coord_space, rot, &coord_space_tmp));
+    CHECK_CALL(Matrix_div(&coord_space_tmp, float_scale()));
+    SWAP_MATRIX(coord_space, coord_space_tmp);
+}
+
 void scene_update()
 {
-    CHECK_CALL(Matrix_dot(&coord_space, &rot_z, &coord_space_tmp));
-    CHECK_CALL(Matrix_div(&coord_space_tmp, float_scale()));
-    SWAP_MATRIX(coord_space, coord_space_tmp);
-
-    CHECK_CALL(Matrix_dot(&coord_space, &rot_x, &coord_space_tmp));
-    CHECK_CALL(Matrix_div(&coord_space_tmp, float_scale()));
-    SWAP_MATRIX(coord_space, coord_space_tmp);
+    rot_space(&rot_z);
+    rot_space(&rot_x);
+    rot_space(&rot_y);
 
     CHECK_CALL(Matrix_dot(&coord_space, &camera_pos, &coord_proj));
 
@@ -144,9 +147,6 @@ void scene_update()
         MAT_AT_UNSAFE(coord_screen, h, 0) = ((MAT_AT_UNSAFE(coord_screen, h, 0)) / (GRID_SIZE / CAMERA_F)) + (V_SCREEN_WIDTH / 2);
         MAT_AT_UNSAFE(coord_screen, h, 1) = ((MAT_AT_UNSAFE(coord_screen, h, 1)) / (GRID_SIZE / CAMERA_F)) + (V_SCREEN_HEIGHT / 2);
     }
-
-    // Matrix_dump(&coord_space);
-    // panic("STOP\r\n")
 }
 
 void scene_draw()
