@@ -260,7 +260,7 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t g
 #ifdef USE_PROJECTION_ORTHOGRAPHIC
         matdata_t s = f;
 #else  // USE_PROJECTION_ORTHOGRAPHIC
-        matdata_t s = (MATPTR_AT_UNSAFE(space, h, 2) / grid_size) * f;
+        matdata_t s = MATPTR_AT_UNSAFE(space, h, 2) * f / grid_size;
 #endif // USE_PROJECTION_ORTHOGRAPHIC
 
         matdata_t x = s * MATPTR_AT_UNSAFE(space, h, 0);
