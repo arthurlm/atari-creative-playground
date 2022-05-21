@@ -58,7 +58,7 @@ Matrix_t Matrix_alloc(uint16_t height, uint16_t width)
     Matrix_t mat = {
         .width = width,
         .height = height,
-        .data = malloc(width * height * sizeof(int16_t)),
+        .data = malloc(width * height * sizeof(matdata_t)),
     };
     return mat;
 }
@@ -104,7 +104,7 @@ int8_t Matrix_clear(Matrix_t *mat)
     return Matrix_fill(mat, 0);
 }
 
-int8_t Matrix_fill(Matrix_t *mat, int16_t value)
+int8_t Matrix_fill(Matrix_t *mat, matdata_t value)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
 
@@ -160,7 +160,7 @@ int8_t Matrix_transpose(Matrix_t *src, Matrix_t *dst)
     return ERR_NO;
 }
 
-int8_t Matrix_add_const(Matrix_t *mat, int16_t value)
+int8_t Matrix_add_const(Matrix_t *mat, matdata_t value)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
 
@@ -173,7 +173,7 @@ int8_t Matrix_add_const(Matrix_t *mat, int16_t value)
     return ERR_NO;
 }
 
-int8_t Matrix_mul(Matrix_t *mat, int16_t value)
+int8_t Matrix_mul(Matrix_t *mat, matdata_t value)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
 
@@ -186,7 +186,7 @@ int8_t Matrix_mul(Matrix_t *mat, int16_t value)
     return ERR_NO;
 }
 
-int8_t Matrix_div(Matrix_t *mat, int16_t value)
+int8_t Matrix_div(Matrix_t *mat, matdata_t value)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
 
@@ -213,7 +213,7 @@ int8_t Matrix_dot(Matrix_t *a, Matrix_t *b, Matrix_t *out)
     {
         for (uint16_t j = 0; j < out->width; j++)
         {
-            int16_t v = 0;
+            matdata_t v = 0;
 
             for (uint16_t k = 0; k < a->width; k++)
             {
@@ -227,7 +227,7 @@ int8_t Matrix_dot(Matrix_t *a, Matrix_t *b, Matrix_t *out)
     return ERR_NO;
 }
 
-int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16_t z)
+int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, matdata_t x, matdata_t y, matdata_t z)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || row >= mat->height)
@@ -243,7 +243,7 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16
     return ERR_NO;
 }
 
-int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_size)
+int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t grid_size)
 {
     _ENSURE_MATRIX_PTR_VALID(space);
     _ENSURE_MATRIX_PTR_VALID(plane);
@@ -254,9 +254,9 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_
 
     for (uint16_t h = 0; h < space->height; h++)
     {
-        int16_t s = (MATPTR_AT_UNSAFE(space, h, 2) / grid_size) * f;
-        int16_t x = s * MATPTR_AT_UNSAFE(space, h, 0);
-        int16_t y = s * MATPTR_AT_UNSAFE(space, h, 1);
+        matdata_t s = (MATPTR_AT_UNSAFE(space, h, 2) / grid_size) * f;
+        matdata_t x = s * MATPTR_AT_UNSAFE(space, h, 0);
+        matdata_t y = s * MATPTR_AT_UNSAFE(space, h, 1);
 
         MATPTR_AT_UNSAFE(plane, h, 0) = x;
         MATPTR_AT_UNSAFE(plane, h, 1) = y;
@@ -265,7 +265,7 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_
     return ERR_NO;
 }
 
-int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta)
+int8_t Matrix_make_rot_x(Matrix_t *mat, matdata_t theta)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || mat->height != 4)
@@ -273,8 +273,8 @@ int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta)
         return ERR_MATSHAPE;
     }
 
-    int16_t cosT = soft_cos(theta);
-    int16_t sinT = soft_sin(theta);
+    matdata_t cosT = soft_cos(theta);
+    matdata_t sinT = soft_sin(theta);
 
     //              (mat, row, col) = v
     MATPTR_AT_UNSAFE(mat, 0, 0) = float_scale();
@@ -300,7 +300,7 @@ int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta)
     return ERR_NO;
 }
 
-int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta)
+int8_t Matrix_make_rot_y(Matrix_t *mat, matdata_t theta)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || mat->height != 4)
@@ -308,8 +308,8 @@ int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta)
         return ERR_MATSHAPE;
     }
 
-    int16_t cosT = soft_cos(theta);
-    int16_t sinT = soft_sin(theta);
+    matdata_t cosT = soft_cos(theta);
+    matdata_t sinT = soft_sin(theta);
 
     //              (mat, row, col) = v
     MATPTR_AT_UNSAFE(mat, 0, 0) = cosT;
@@ -335,7 +335,7 @@ int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta)
     return ERR_NO;
 }
 
-int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta)
+int8_t Matrix_make_rot_z(Matrix_t *mat, matdata_t theta)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || mat->height != 4)
@@ -343,8 +343,8 @@ int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta)
         return ERR_MATSHAPE;
     }
 
-    int16_t cosT = soft_cos(theta);
-    int16_t sinT = soft_sin(theta);
+    matdata_t cosT = soft_cos(theta);
+    matdata_t sinT = soft_sin(theta);
 
     //              (mat, row, col) = v
     MATPTR_AT_UNSAFE(mat, 0, 0) = cosT;

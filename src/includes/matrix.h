@@ -13,11 +13,13 @@
 #define MAT_AT_UNSAFE(MAT, II, JJ) (MAT).data[(II) * (MAT).width + (JJ)]
 #define MATPTR_AT_UNSAFE(MAT, II, JJ) (MAT)->data[(II) * (MAT)->width + (JJ)]
 
+typedef int16_t matdata_t;
+
 typedef struct Matrix
 {
     uint16_t width;
     uint16_t height;
-    int16_t *data;
+    matdata_t *data;
 } Matrix_t;
 
 /**
@@ -55,7 +57,7 @@ int8_t Matrix_clear(Matrix_t *mat);
 /**
  * Set matrix content to value.
  */
-int8_t Matrix_fill(Matrix_t *mat, int16_t value);
+int8_t Matrix_fill(Matrix_t *mat, matdata_t value);
 
 /**
  * Fill matrix as identity matrix.
@@ -77,17 +79,17 @@ int8_t Matrix_transpose(Matrix_t *src, Matrix_t *dst);
 /**
  * Add const to all matrix elements.
  */
-int8_t Matrix_add_const(Matrix_t *mat, int16_t value);
+int8_t Matrix_add_const(Matrix_t *mat, matdata_t value);
 
 /**
  * Multiply all matrix elements.
  */
-int8_t Matrix_mul(Matrix_t *mat, int16_t value);
+int8_t Matrix_mul(Matrix_t *mat, matdata_t value);
 
 /**
  * Divide all matrix elements.
  */
-int8_t Matrix_div(Matrix_t *mat, int16_t value);
+int8_t Matrix_div(Matrix_t *mat, matdata_t value);
 
 /**
  * @brief Perform dot product of A and B.
@@ -102,7 +104,7 @@ int8_t Matrix_dot(Matrix_t *a, Matrix_t *b, Matrix_t *out);
 /**
  * Set row as a coordonate point.
  */
-int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16_t z);
+int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, matdata_t x, matdata_t y, matdata_t z);
 
 /**
  * Project space to plane using f as focale parameter.
@@ -112,7 +114,7 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, int16_t x, int16_t y, int16
  * @param f Camera defintion
  * @param f Divider to use in Z scale computation
  */
-int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_size);
+int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t grid_size);
 
 /**
  * Init rotation matrix on X axis
@@ -121,7 +123,7 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, int16_t f, int16_t grid_
  * @param theta Angle
  * @return int8_t Status code
  */
-int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta);
+int8_t Matrix_make_rot_x(Matrix_t *mat, matdata_t theta);
 
 /**
  * Init rotation matrix on Y axis
@@ -130,7 +132,7 @@ int8_t Matrix_make_rot_x(Matrix_t *mat, int16_t theta);
  * @param theta Angle
  * @return int8_t Status code
  */
-int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta);
+int8_t Matrix_make_rot_y(Matrix_t *mat, matdata_t theta);
 
 /**
  * Init rotation matrix on Z axis
@@ -139,7 +141,7 @@ int8_t Matrix_make_rot_y(Matrix_t *mat, int16_t theta);
  * @param theta Angle
  * @return int8_t Status code
  */
-int8_t Matrix_make_rot_z(Matrix_t *mat, int16_t theta);
+int8_t Matrix_make_rot_z(Matrix_t *mat, matdata_t theta);
 
 #ifdef ENABLE_STDLIB
 
