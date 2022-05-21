@@ -55,6 +55,7 @@
 
 // Define globals ==================================================================================
 
+Matrix_t coord_space_original;
 Matrix_t coord_space;
 Matrix_t coord_space_tmp;
 Matrix_t camera_pos;
@@ -67,8 +68,8 @@ Matrix_t rot_z;
 
 Matrix_t tmp;
 
-int counter_interrupt = 0;
-int counter_frame = 0;
+uint16_t counter_interrupt = 0;
+uint16_t counter_frame = 0;
 
 int flag_new_frame_ready = 0;
 
@@ -85,6 +86,7 @@ int flag_new_frame_ready = 0;
 
 void scene_setup()
 {
+    coord_space_original = Matrix_alloc(8, 4);
     coord_space = Matrix_alloc(8, 4);
     coord_space_tmp = Matrix_alloc(8, 4);
     camera_pos = Matrix_alloc(4, 4);
@@ -95,7 +97,8 @@ void scene_setup()
     rot_y = Matrix_alloc(4, 4);
     rot_z = Matrix_alloc(4, 4);
 
-    if (coord_space.data == NULL ||
+    if (coord_space_original.data == NULL ||
+        coord_space.data == NULL ||
         coord_space_tmp.data == NULL ||
         camera_pos.data == NULL ||
         coord_proj.data == NULL ||
@@ -109,17 +112,17 @@ void scene_setup()
 
     // Set cube coord
     // NOTE: Scale to make integer computation easyer
-    CHECK_CALL(Matrix_set_point(&coord_space, 0, -1 * GRID_SIZE, -1 * GRID_SIZE, -1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 1, +1 * GRID_SIZE, -1 * GRID_SIZE, -1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 2, +1 * GRID_SIZE, +1 * GRID_SIZE, -1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 3, -1 * GRID_SIZE, +1 * GRID_SIZE, -1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 4, -1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 5, +1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 6, +1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
-    CHECK_CALL(Matrix_set_point(&coord_space, 7, -1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
-    CHECK_CALL(Matrix_make_rot_x(&rot_x, 20));
-    CHECK_CALL(Matrix_make_rot_y(&rot_y, 15));
-    CHECK_CALL(Matrix_make_rot_z(&rot_z, 25));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 0, -1 * GRID_SIZE, -1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 1, +1 * GRID_SIZE, -1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 2, +1 * GRID_SIZE, +1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 3, -1 * GRID_SIZE, +1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 4, -1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 5, +1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 6, +1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space_original, 7, -1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_make_rot_x(&rot_x, 0));
+    CHECK_CALL(Matrix_make_rot_y(&rot_y, 0));
+    CHECK_CALL(Matrix_make_rot_z(&rot_z, 0));
 
     // Set camera pos translate matrix
     CHECK_CALL(Matrix_set_identity(&camera_pos));
@@ -137,6 +140,18 @@ inline void rot_space(Matrix_t *rot)
 
 void scene_update()
 {
+    // Recompute rotation matrix based on frame count
+    uint16_t rx = 6 * counter_interrupt;
+    uint16_t ry = 9 * counter_interrupt;
+    uint16_t rz = 12 * counter_interrupt;
+
+    CHECK_CALL(Matrix_make_partial_rot_x(&rot_x, rx));
+    CHECK_CALL(Matrix_make_partial_rot_y(&rot_y, ry));
+    CHECK_CALL(Matrix_make_partial_rot_z(&rot_z, rz));
+
+    // Apply rotation to space
+    CHECK_CALL(Matrix_copy(&coord_space_original, &coord_space));
+
     rot_space(&rot_z);
     rot_space(&rot_x);
     rot_space(&rot_y);
@@ -183,7 +198,7 @@ void __attribute__((interrupt)) vector_hblank()
     }
 
     // Update counter (debug purposes)
-    counter_interrupt++;
+    counter_interrupt = (counter_interrupt + 1) % sizeof_tables();
 
     // Mark interruption address as terminated
     *(INTERRUPTION_SERVICE_ADDRESS) &= END_OF_INTERRUPT_TIMER_HBLANK;
