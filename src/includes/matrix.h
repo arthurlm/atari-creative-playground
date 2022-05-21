@@ -117,7 +117,7 @@ int8_t Matrix_set_point(Matrix_t *mat, uint16_t row, matdata_t x, matdata_t y, m
 int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t grid_size);
 
 /**
- * Init rotation matrix on X axis
+ * Init rotation matrix on X axis.
  *
  * @param mat Input matrix
  * @param theta Angle
@@ -126,7 +126,16 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t g
 int8_t Matrix_make_rot_x(Matrix_t *mat, matdata_t theta);
 
 /**
- * Init rotation matrix on Y axis
+ * Init rotation matrix on X axis assuming it was already init with zeros.
+ *
+ * @param mat Input matrix
+ * @param theta Angle
+ * @return int8_t Status code
+ */
+int8_t Matrix_make_partial_rot_x(Matrix_t *mat, matdata_t theta);
+
+/**
+ * Init rotation matrix on Y axis.
  *
  * @param mat Input matrix
  * @param theta Angle
@@ -135,13 +144,31 @@ int8_t Matrix_make_rot_x(Matrix_t *mat, matdata_t theta);
 int8_t Matrix_make_rot_y(Matrix_t *mat, matdata_t theta);
 
 /**
- * Init rotation matrix on Z axis
+ * Init rotation matrix on Y axis assuming it was already init with zeros.
+ *
+ * @param mat Input matrix
+ * @param theta Angle
+ * @return int8_t Status code
+ */
+int8_t Matrix_make_partial_rot_y(Matrix_t *mat, matdata_t theta);
+
+/**
+ * Init rotation matrix on Z axis.
  *
  * @param mat Input matrix
  * @param theta Angle
  * @return int8_t Status code
  */
 int8_t Matrix_make_rot_z(Matrix_t *mat, matdata_t theta);
+
+/**
+ * Init rotation matrix on Z axis assuming it was already init with zeros.
+ *
+ * @param mat Input matrix
+ * @param theta Angle
+ * @return int8_t Status code
+ */
+int8_t Matrix_make_partial_rot_z(Matrix_t *mat, matdata_t theta);
 
 #ifdef ENABLE_STDLIB
 

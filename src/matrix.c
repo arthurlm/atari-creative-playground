@@ -275,6 +275,13 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t g
 
 int8_t Matrix_make_rot_x(Matrix_t *mat, matdata_t theta)
 {
+    _ENSURE_CALL_SUCCESS(Matrix_clear(mat));
+    _ENSURE_CALL_SUCCESS(Matrix_make_partial_rot_x(mat, theta));
+    return ERR_NO;
+}
+
+int8_t Matrix_make_partial_rot_x(Matrix_t *mat, matdata_t theta)
+{
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || mat->height != 4)
     {
@@ -286,29 +293,26 @@ int8_t Matrix_make_rot_x(Matrix_t *mat, matdata_t theta)
 
     //              (mat, row, col) = v
     MATPTR_AT_UNSAFE(mat, 0, 0) = float_scale();
-    MATPTR_AT_UNSAFE(mat, 0, 1) = 0;
-    MATPTR_AT_UNSAFE(mat, 0, 2) = 0;
-    MATPTR_AT_UNSAFE(mat, 0, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 1, 0) = 0;
     MATPTR_AT_UNSAFE(mat, 1, 1) = cosT;
     MATPTR_AT_UNSAFE(mat, 1, 2) = -sinT;
-    MATPTR_AT_UNSAFE(mat, 1, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 2, 0) = 0;
     MATPTR_AT_UNSAFE(mat, 2, 1) = sinT;
     MATPTR_AT_UNSAFE(mat, 2, 2) = cosT;
-    MATPTR_AT_UNSAFE(mat, 2, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 3, 0) = 0;
-    MATPTR_AT_UNSAFE(mat, 3, 1) = 0;
-    MATPTR_AT_UNSAFE(mat, 3, 2) = 0;
     MATPTR_AT_UNSAFE(mat, 3, 3) = float_scale();
 
     return ERR_NO;
 }
 
 int8_t Matrix_make_rot_y(Matrix_t *mat, matdata_t theta)
+{
+    _ENSURE_CALL_SUCCESS(Matrix_clear(mat));
+    _ENSURE_CALL_SUCCESS(Matrix_make_partial_rot_y(mat, theta));
+    return ERR_NO;
+}
+
+int8_t Matrix_make_partial_rot_y(Matrix_t *mat, matdata_t theta)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || mat->height != 4)
@@ -321,29 +325,27 @@ int8_t Matrix_make_rot_y(Matrix_t *mat, matdata_t theta)
 
     //              (mat, row, col) = v
     MATPTR_AT_UNSAFE(mat, 0, 0) = cosT;
-    MATPTR_AT_UNSAFE(mat, 0, 1) = 0;
     MATPTR_AT_UNSAFE(mat, 0, 2) = sinT;
-    MATPTR_AT_UNSAFE(mat, 0, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 1, 0) = 0;
     MATPTR_AT_UNSAFE(mat, 1, 1) = float_scale();
-    MATPTR_AT_UNSAFE(mat, 1, 2) = 0;
-    MATPTR_AT_UNSAFE(mat, 1, 3) = 0;
 
     MATPTR_AT_UNSAFE(mat, 2, 0) = -sinT;
     MATPTR_AT_UNSAFE(mat, 2, 1) = 0;
     MATPTR_AT_UNSAFE(mat, 2, 2) = cosT;
-    MATPTR_AT_UNSAFE(mat, 2, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 3, 0) = 0;
-    MATPTR_AT_UNSAFE(mat, 3, 1) = 0;
-    MATPTR_AT_UNSAFE(mat, 3, 2) = 0;
     MATPTR_AT_UNSAFE(mat, 3, 3) = float_scale();
 
     return ERR_NO;
 }
 
 int8_t Matrix_make_rot_z(Matrix_t *mat, matdata_t theta)
+{
+    _ENSURE_CALL_SUCCESS(Matrix_clear(mat));
+    _ENSURE_CALL_SUCCESS(Matrix_make_partial_rot_z(mat, theta));
+    return ERR_NO;
+}
+
+int8_t Matrix_make_partial_rot_z(Matrix_t *mat, matdata_t theta)
 {
     _ENSURE_MATRIX_PTR_VALID(mat);
     if (mat->width != 4 || mat->height != 4)
@@ -357,22 +359,12 @@ int8_t Matrix_make_rot_z(Matrix_t *mat, matdata_t theta)
     //              (mat, row, col) = v
     MATPTR_AT_UNSAFE(mat, 0, 0) = cosT;
     MATPTR_AT_UNSAFE(mat, 0, 1) = -sinT;
-    MATPTR_AT_UNSAFE(mat, 0, 2) = 0;
-    MATPTR_AT_UNSAFE(mat, 0, 3) = 0;
 
     MATPTR_AT_UNSAFE(mat, 1, 0) = sinT;
     MATPTR_AT_UNSAFE(mat, 1, 1) = cosT;
-    MATPTR_AT_UNSAFE(mat, 1, 2) = 0;
-    MATPTR_AT_UNSAFE(mat, 1, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 2, 0) = 0;
-    MATPTR_AT_UNSAFE(mat, 2, 1) = 0;
     MATPTR_AT_UNSAFE(mat, 2, 2) = float_scale();
-    MATPTR_AT_UNSAFE(mat, 2, 3) = 0;
 
-    MATPTR_AT_UNSAFE(mat, 3, 0) = 0;
-    MATPTR_AT_UNSAFE(mat, 3, 1) = 0;
-    MATPTR_AT_UNSAFE(mat, 3, 2) = 0;
     MATPTR_AT_UNSAFE(mat, 3, 3) = float_scale();
 
     return ERR_NO;
