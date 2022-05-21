@@ -10,11 +10,23 @@
 #include "video.h"
 #include "matrix.h"
 #include "utils.h"
+#include "trigo.h"
 
 // Define constant =================================================================================
 
-#define CAMERA_F 1
+#define CAMERA_F 4
+#define CAMERA_X 0
+#define CAMERA_Y 0
+#define CAMERA_Z -3
 
+#define GRID_SIZE 1000
+
+#ifdef ENABLE_FAST_CALL
+#define CHECK_CALL(XX) \
+    {                  \
+        (XX);          \
+    }
+#else // ENABLE_FAST_CALL
 #define CHECK_CALL(XX)               \
     {                                \
         if ((XX) != ERR_NO)          \
@@ -22,6 +34,7 @@
             panic("Call fail:" #XX); \
         }                            \
     }
+#endif // ENABLE_FAST_CALL
 
 #define DRAW_CUBE_SCREEN_SEGMENT(P1, P2)                   \
     {                                                      \
@@ -35,57 +48,97 @@
 // Define globals ==================================================================================
 
 Matrix_t coord_space;
+Matrix_t coord_space_tmp;
 Matrix_t camera_pos;
 Matrix_t coord_proj;
 Matrix_t coord_screen;
+
+Matrix_t rot_x;
+Matrix_t rot_y;
+Matrix_t rot_z;
+
+Matrix_t tmp;
+
+// Define utils ====================================================================================
+
+#define SWAP_MATRIX(XXX, YYY) \
+    {                         \
+        tmp = (XXX);          \
+        (XXX) = (YYY);        \
+        (YYY) = tmp;          \
+    }
 
 // Define scene lifecycle callback =================================================================
 
 void scene_setup()
 {
     coord_space = Matrix_alloc(8, 4);
+    coord_space_tmp = Matrix_alloc(8, 4);
     camera_pos = Matrix_alloc(4, 4);
     coord_proj = Matrix_alloc(8, 4);
     coord_screen = Matrix_alloc(8, 2);
 
+    rot_x = Matrix_alloc(4, 4);
+    rot_y = Matrix_alloc(4, 4);
+    rot_z = Matrix_alloc(4, 4);
+
     if (coord_space.data == NULL ||
+        coord_space_tmp.data == NULL ||
         camera_pos.data == NULL ||
         coord_proj.data == NULL ||
-        coord_screen.data == NULL)
+        coord_screen.data == NULL ||
+        rot_x.data == NULL ||
+        rot_y.data == NULL ||
+        rot_z.data == NULL)
     {
         panic("Fail to init matrix");
     }
 
     // Set cube coord
     // NOTE: Scale to make integer computation easyer
-    CHECK_CALL(Matrix_set_point(&coord_space, 0, -1000, -1000, -1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 1, +1000, -1000, -1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 2, +1000, +1000, -1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 3, -1000, +1000, -1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 4, -1000, -1000, +1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 5, +1000, -1000, +1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 6, +1000, +1000, +1000));
-    CHECK_CALL(Matrix_set_point(&coord_space, 7, -1000, +1000, +1000));
+    CHECK_CALL(Matrix_set_point(&coord_space, 0, -1 * GRID_SIZE, -1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 1, +1 * GRID_SIZE, -1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 2, +1 * GRID_SIZE, +1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 3, -1 * GRID_SIZE, +1 * GRID_SIZE, -1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 4, -1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 5, +1 * GRID_SIZE, -1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 6, +1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_set_point(&coord_space, 7, -1 * GRID_SIZE, +1 * GRID_SIZE, +1 * GRID_SIZE));
+    CHECK_CALL(Matrix_make_rot_x(&rot_x, 15));
+    CHECK_CALL(Matrix_make_rot_y(&rot_y, 15));
+    CHECK_CALL(Matrix_make_rot_z(&rot_z, 15));
 
     // Set camera pos translate matrix
     CHECK_CALL(Matrix_set_identity(&camera_pos));
-    MAT_AT_UNSAFE(camera_pos, 3, 2) = -3000;
+    MAT_AT_UNSAFE(camera_pos, 3, 0) = CAMERA_X * GRID_SIZE;
+    MAT_AT_UNSAFE(camera_pos, 3, 1) = CAMERA_Y * GRID_SIZE;
+    MAT_AT_UNSAFE(camera_pos, 3, 2) = CAMERA_Z * GRID_SIZE;
 }
 
 void scene_update()
 {
+    CHECK_CALL(Matrix_dot(&coord_space, &rot_z, &coord_space_tmp));
+    CHECK_CALL(Matrix_div(&coord_space_tmp, float_scale()));
+    SWAP_MATRIX(coord_space, coord_space_tmp);
+
+    CHECK_CALL(Matrix_dot(&coord_space, &rot_x, &coord_space_tmp));
+    CHECK_CALL(Matrix_div(&coord_space_tmp, float_scale()));
+    SWAP_MATRIX(coord_space, coord_space_tmp);
+
     CHECK_CALL(Matrix_dot(&coord_space, &camera_pos, &coord_proj));
 
     // Project matrix to screen
-    CHECK_CALL(Matrix_project(&coord_proj, &coord_screen, CAMERA_F, 1000));
+    CHECK_CALL(Matrix_project(&coord_proj, &coord_screen, CAMERA_F, GRID_SIZE));
 
     // Convert space to screen coord
-    // NOTE: bellow call are computed from screen size and FRACTIONAL_NUMBER_PRECISION_SCALE
     for (uint16_t h = 0; h < coord_screen.height; h++)
     {
-        MAT_AT_UNSAFE(coord_screen, h, 0) = ((MAT_AT_UNSAFE(coord_screen, h, 0) + 4000) / 80) + 120;
-        MAT_AT_UNSAFE(coord_screen, h, 1) = ((MAT_AT_UNSAFE(coord_screen, h, 1) + 4000) / 80) + 50;
+        MAT_AT_UNSAFE(coord_screen, h, 0) = ((MAT_AT_UNSAFE(coord_screen, h, 0)) / (GRID_SIZE / CAMERA_F)) + (V_SCREEN_WIDTH / 2);
+        MAT_AT_UNSAFE(coord_screen, h, 1) = ((MAT_AT_UNSAFE(coord_screen, h, 1)) / (GRID_SIZE / CAMERA_F)) + (V_SCREEN_HEIGHT / 2);
     }
+
+    // Matrix_dump(&coord_space);
+    // panic("STOP\r\n")
 }
 
 void scene_draw()
@@ -116,7 +169,7 @@ int main(int argc, char **argv)
 
     // Configure Line-A
     linea_set_clip_region(0, 0, 0, 0, 0);
-    linea_set_bit_plane(1, 0, 0, 1);
+    linea_set_bit_plane(1, 1, 1, 1);
 
     // Setup globals
     scene_setup();

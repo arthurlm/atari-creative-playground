@@ -19,6 +19,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
 include_directories(src/includes)
 
 # add_compile_definitions(ENABLE_STDLIB)
+# add_compile_definitions(ENABLE_FAST_CALL)
 
 # Add app.prg ======================================================================================
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
