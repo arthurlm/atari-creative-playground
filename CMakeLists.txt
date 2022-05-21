@@ -21,6 +21,8 @@ include_directories(src/includes)
 # add_compile_definitions(ENABLE_STDLIB)
 # add_compile_definitions(ENABLE_FAST_CALL)
 
+add_compile_definitions(USE_PROJECTION_ORTHOGRAPHIC)
+
 # Add app.prg ======================================================================================
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
 

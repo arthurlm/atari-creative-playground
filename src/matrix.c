@@ -254,7 +254,15 @@ int8_t Matrix_project(Matrix_t *space, Matrix_t *plane, matdata_t f, matdata_t g
 
     for (uint16_t h = 0; h < space->height; h++)
     {
+        // FIXME: too much issue with perspective projection rounding for now
+        // Switching to orthographic projection.
+
+#ifdef USE_PROJECTION_ORTHOGRAPHIC
+        matdata_t s = f;
+#else  // USE_PROJECTION_ORTHOGRAPHIC
         matdata_t s = (MATPTR_AT_UNSAFE(space, h, 2) / grid_size) * f;
+#endif // USE_PROJECTION_ORTHOGRAPHIC
+
         matdata_t x = s * MATPTR_AT_UNSAFE(space, h, 0);
         matdata_t y = s * MATPTR_AT_UNSAFE(space, h, 1);
 
