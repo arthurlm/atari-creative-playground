@@ -1685,6 +1685,11 @@ softfloat_t float_scale()
     return 2000;
 }
 
+int16_t sizeof_tables()
+{
+    return 12566;
+}
+
 softfloat_t soft_cos(softfloat_t value)
 {
     return _cos_table[value % 12566];
