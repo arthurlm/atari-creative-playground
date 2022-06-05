@@ -60,27 +60,27 @@
 
 // Define globals ==================================================================================
 
-Matrix_t coord_space_original;
-Matrix_t coord_space;
-Matrix_t coord_space_tmp;
-Matrix_t camera_pos;
-Matrix_t coord_proj;
-Matrix_t coord_screen;
+static Matrix_t coord_space_original;
+static Matrix_t coord_space;
+static Matrix_t coord_space_tmp;
+static Matrix_t camera_pos;
+static Matrix_t coord_proj;
+static Matrix_t coord_screen;
 
-Matrix_t rot_x;
-Matrix_t rot_y;
-Matrix_t rot_z;
+static Matrix_t rot_x;
+static Matrix_t rot_y;
+static Matrix_t rot_z;
 
-Matrix_t tmp;
+static Matrix_t tmp;
 
-uint16_t rotate_x = 0;
-uint16_t rotate_y = 0;
-uint16_t rotate_z = 0;
+static uint16_t rotate_x = 0;
+static uint16_t rotate_y = 0;
+static uint16_t rotate_z = 0;
 
-uint16_t counter_interrupt = 0;
-uint16_t counter_frame = 0;
+static uint16_t counter_interrupt = 0;
+static uint16_t counter_frame = 0;
 
-int flag_new_frame_ready = 0;
+static int flag_new_frame_ready = 0;
 
 // Define utils ====================================================================================
 
@@ -140,7 +140,7 @@ void scene_setup()
     MAT_AT_UNSAFE(camera_pos, 3, 2) = CAMERA_Z * GRID_SIZE;
 }
 
-inline void rot_space(Matrix_t *rot)
+inline static void rot_space(Matrix_t *rot)
 {
     CHECK_CALL(Matrix_dot(&coord_space, rot, &coord_space_tmp));
     CHECK_CALL(Matrix_div(&coord_space_tmp, float_scale()));

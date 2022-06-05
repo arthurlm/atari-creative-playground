@@ -9,17 +9,17 @@
 #include "linea.h"
 #include "utils.h"
 
-void *_v_framebuffer_log = NULL;
-void *_v_framebuffer_phy = NULL;
-void *_v_framebuffer_vir = NULL;
+static void *_v_framebuffer_log = NULL;
+static void *_v_framebuffer_phy = NULL;
+static void *_v_framebuffer_vir = NULL;
 
-uint16_t *_v_framebuffer_active = NULL;
-uint16_t *_v_framebuffer_hidden = NULL;
+static uint16_t *_v_framebuffer_active = NULL;
+static uint16_t *_v_framebuffer_hidden = NULL;
 
-uint16_t _v_saved_mode;
-uint16_t _v_saved_palette[16];
+static uint16_t _v_saved_mode;
+static uint16_t _v_saved_palette[16];
 
-uint16_t _v_palette[16] = {
+static uint16_t _v_palette[16] = {
     0x000, // 0b0000 BLACK
 
     0x300, // 0b0001 DARK_RED
