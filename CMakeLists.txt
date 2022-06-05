@@ -18,40 +18,55 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
 # include
 include_directories(src/includes)
 
+# M68K build options ===============================================================================
+
+if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
+
+    # Set target m68x CPU with short int
+    add_compile_options(-m68000)
+    add_compile_options(-mshort)
+    add_link_options(-Wl,--traditional-format)
+
+    # Set build without stdlib and use "libcmini" instead
+    link_directories($ENV{HOME}/libcmini-0.54/lib/mshort)
+    add_link_options(-nostdlib)
+    link_libraries(cmini gcc)
+
+endif()
+
+# User option ======================================================================================
+
 # add_compile_definitions(ENABLE_STDLIB)
 # add_compile_definitions(ENABLE_FAST_CALL)
 
 # add_compile_definitions(USE_PROJECTION_ORTHOGRAPHIC)
 
-# Add app.prg ======================================================================================
+# Add common library ===============================================================================
+
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
 
-add_executable(app.prg
-    # make sure crt0 is included first
-    $ENV{HOME}/libcmini-0.54/lib/crt0.o
-    # then add sources
-    src/linea.c
-    src/main.c
-    src/matrix.c
-    src/trigo.c
-    src/utils.c
-    src/video.c
-)
+    add_library(atari_common STATIC
+        # add sources
+        src/linea.c
+        src/matrix.c
+        src/trigo.c
+        src/utils.c
+        src/video.c
+    )
 
-# Set "app.prg" target m68x CPU with short int
-target_compile_options(app.prg PRIVATE -m68000)
-target_compile_options(app.prg PRIVATE -mshort)
-target_link_options(app.prg    PRIVATE -Wl,--traditional-format)
+endif()
 
-# Set "app.prg" build without stdlib and use "libcmini" instead
-target_link_libraries(app.prg
-    PRIVATE cmini
-    PRIVATE gcc
-)
-target_link_directories(app.prg
-    PRIVATE $ENV{HOME}/libcmini-0.54/lib/mshort
-)
-target_link_options(app.prg PRIVATE -nostdlib)
+# Add cube.prg =====================================================================================
+if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
+
+    add_executable(cube.prg
+        # make sure crt0 is included first
+        $ENV{HOME}/libcmini-0.54/lib/crt0.o
+        # then add sources
+        src/scenes/cube.c
+    )
+
+    target_link_libraries(cube.prg PRIVATE atari_common)
 
 endif()
 

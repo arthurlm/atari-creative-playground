@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-typeset program_name="app.prg"
+typeset program_name="cube.prg"
 typeset build_folder="./build"
 typeset image_folder="./image"
 typeset image_name="image.st"
