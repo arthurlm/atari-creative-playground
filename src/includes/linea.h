@@ -116,6 +116,95 @@ typedef struct __attribute__((__packed__)) bitblt
     int8_t filler[24]; /* Internal buffer                 */
 } bitblt_t;
 
+typedef struct __attribute__((__packed__)) linea_vdiesc
+{
+    int32_t reserved6;        /* -$38E: Reserved                     */
+    font_hdr_t *cur_font;     /* -$38A: Pointer->current font header */
+    int16_t reserved5[23];    /* -$386: Reserved                     */
+    int16_t m_pos_hx;         /* -$358: X-coordinate mouse hot-spot  */
+    int16_t m_pos_hy;         /* -$356: Y-coordinate mouse hot-spot  */
+    int16_t m_planes;         /* -$354: Write mode for mouse pointer */
+                              /*        1=Replace, -1=XOR mode       */
+    int16_t m_cdb_bg;         /* -$352: Mouse pointer backgr. colour */
+    int16_t m_cdb_fg;         /* -$350: Mouse pointer foregr. colour */
+    int16_t mask_form[32];    /* -$34E: Mouse ptr. foregr. and mask  */
+                              /*        Alternately 1 WORD           */
+                              /*        foreground and mask          */
+    int16_t inq_tab[45];      /* -$30E: As vq_extnd                  */
+    int16_t dev_tab[45];      /* -$2B4: As v_opnwk                   */
+    int16_t gcurx;            /* -$25A: Curr. mouse pointer X-posn.  */
+    int16_t gcury;            /* -$258: Curr. mouse pointer Y-posn.  */
+    int16_t m_hid_ct;         /* -$256: Number of hide_mouse-calls   */
+    int16_t mouse_bt;         /* -$254: Current mouse button status  */
+    int16_t req_col[3][16];   /* -$252: Internal data for vq_color   */
+    int16_t siz_tab[15];      /* -$1F2: As v_opnwk                   */
+    int16_t reserved4[2];     /*        Reserved                     */
+    void *cur_work;           /* -$1D0: Attributes current workstn.  */
+    font_hdr_t *def_font;     /* -$1CC: Standard system font         */
+    font_hdr_t *font_ring[4]; /* -$1C8: System and GDOS font lists   */
+                              /*        Chained FONT_HDR structures  */
+                              /*        0 as terminator ID           */
+    int16_t font_count;       /* -$1B8: Total number of fonts        */
+    int16_t reserved3[45];    /*        Reserved                     */
+    int8_t cur_ms_stat;       /* -$15C: Mouse status since last      */
+                              /*        Bit 0:    Left button (0=up) */
+                              /*        Bit 1:    Right button (0=up)*/
+                              /*        Bit 2..4: Reserved           */
+                              /*        Bit 5:    1=Mouse moved      */
+                              /*        Bit 6:    1=State of right   */
+                              /*                  button changed     */
+                              /*        Bit 7:    1=State of left    */
+                              /*                  button changed     */
+    int8_t reserved2;         /*        Reserved                     */
+    int16_t v_hid_cnt;        /*        Number of Hide_cursor calls  */
+    int16_t cur_x;            /* -$158: X-position for mouse pointer */
+    int16_t cur_y;            /* -$156: Y-position for mouse pointer */
+    int8_t cur_flag;          /* -$154: != 0: Redraw mouse ptr.in VBL*/
+    int8_t mouse_flag;        /* -$153: != 0: Mouse interrupt on     */
+    int32_t reserved1;        /*        Reserved                     */
+    int16_t v_sav_xy[2];      /* -$14E: X-Y coordinates saved by VT52*/
+    int16_t save_len;         /* -$14A: Number of screen lines       */
+    void *save_addr;          /* -$148: First bufered byte in screen */
+                              /*        memory                       */
+    int16_t save_stat;        /* -$144: Dirty flag                   */
+                              /*        Bit 0: 1=Buffer is valid     */
+                              /*        Bit 1: 1=Long, 0=Word bufferd*/
+    int32_t save_area[4][16]; /* -$142: Buffer for image under mouse */
+    void (*user_tim)(void);   /*  -$42: Timer interrupt vector       */
+                              /*        To terminate should jump to  */
+                              /*        next_tim                     */
+    void (*next_tim)(void);   /*  -$3E: Old timer interrupt          */
+    void (*user_but)(void);   /*  -$3A: Mouse button vector          */
+    void (*user_cur)(void);   /*  -$36: Mouse rendering vector       */
+    void (*user_mot)(void);   /*  -$32: Mouse movement vector        */
+    int16_t v_cel_ht;         /*  -$2E: Current text cell height     */
+    int16_t v_cel_mx;         /*  -$2C: Maximum column for cursor    */
+    int16_t v_cel_my;         /*  -$2A: Maximum line for cursor      */
+    int16_t v_cel_wr;         /*  -$28: Bytes betwn. character cells */
+    int16_t v_col_bg;         /*  -$26: Text background colour       */
+    int16_t v_col_fg;         /*  -$24: Text foreground colour       */
+    void *v_cur_ad;           /*  -$22: Address of cursor position   */
+    int16_t v_cur_off;        /*  -$1E: Vertical screen offset       */
+    int16_t v_cur_xy[2];      /*  -$1C: X-Y position of text cursor  */
+    int8_t v_period;          /*  -$18: Current cursor blink rate    */
+    int8_t v_cur_ct;          /*  -$17: Countdown timer for blink    */
+    void *v_fnt_ad;           /*  -$16: Addr. of monospace font data */
+    int16_t v_fnt_nd;         /*  -$12: Last ASCII code in font      */
+    int16_t v_fnt_st;         /*  -$10: First ASCII code in font     */
+    int16_t v_fnt_wd;         /*   -$E: Width of font form in bytes  */
+    int16_t v_rez_hz;         /*   -$C: Horizontal pixel resolution  */
+    int16_t *v_off_ad;        /*   -$A: Address of font offset table */
+    int16_t reserved;         /*   -$6: Cursorflag (TOS 1.00)/res.   */
+                              /*        Bit 0: Blink on/off          */
+                              /*        Bit 1: Blink status norm/inv.*/
+                              /*        Bit 2: Cursor visible no/yes */
+                              /*        Bit 3: Wrapping on/off       */
+                              /*        Bit 4: Inverse on/off        */
+                              /*        Bit 5: Cursorpos. saved n/y  */
+    int16_t v_rez_vt;         /*   -$4: Vertical pixel resolution    */
+    int16_t bytes_lin;        /*   -$2: Bytes per screen line        */
+} linea_vdiesc_t;
+
 /**
  * Setup global variables to init Line-A subsystem.
  *
@@ -189,8 +278,18 @@ void linea_draw_rect_filled(int16_t x1, int16_t y1, int16_t x2, int16_t y2);
 void linea_set_mouse_visible(int8_t visible);
 
 /**
- * @brief Print Line-A struct informations.
+ * Get line A parameter block.
  */
-void linea_printf();
+linea_t *linea_get_parameter_block();
+
+/**
+ * Get line A font block.
+ */
+font_hdr_t *linea_get_font_block();
+
+/**
+ * Get line A negative parameter block.
+ */
+linea_vdiesc_t *linea_get_vdiesc_block();
 
 #endif // _LINEA_H_

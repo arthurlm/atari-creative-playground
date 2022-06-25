@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 linea_t *p_linea_parameter_block = NULL;
+linea_vdiesc_t *p_plinea_vdiesc_block = NULL;
 font_hdr_t *p_linea_font_hdr = NULL;
 
 // See m68k arch: https://en.wikipedia.org/wiki/Motorola_68000#Architecture
@@ -38,6 +39,8 @@ void linea_init()
         :
         /* side effect on */
         : D0_D2, A0_A2 AND_ASM_CC AND_ASM_MEMORY);
+
+    p_plinea_vdiesc_block = (void *)(p_linea_parameter_block) - sizeof(linea_vdiesc_t);
 }
 
 void linea_set_bit_plane(int8_t p1, int8_t p2, int8_t p3, int8_t p4)
@@ -132,79 +135,17 @@ void linea_set_mouse_visible(int8_t visible)
     }
 }
 
-void linea_printf()
+linea_t *linea_get_parameter_block()
 {
-#ifdef ENABLE_STDLIB
-    printf("===== LINE A CONTENT ====\n");
-    printf("p_linea_parameter_block: %p\n", p_linea_parameter_block);
-    printf("p_linea_font_hdr: %p\n", p_linea_font_hdr);
+    return p_linea_parameter_block;
+}
 
-    if (p_linea_parameter_block)
-    {
-        printf("\n\r");
-        printf(">> parameter_block (sizeof: %ld)\n", sizeof(linea_t));
-        printf("v_planes   : %d\n\r", p_linea_parameter_block->v_planes);
-        printf("v_lin_wr   : %d\n\r", p_linea_parameter_block->v_lin_wr);
-        printf("contrl     : %p\n\r", p_linea_parameter_block->contrl);
-        printf("intin      : %p\n\r", p_linea_parameter_block->intin);
-        printf("ptsin      : %p\n\r", p_linea_parameter_block->ptsin);
-        printf("intout     : %p\n\r", p_linea_parameter_block->intout);
-        printf("ptsout     : %p\n\r", p_linea_parameter_block->ptsout);
-        printf("fg_bp      : [%d %d %d %d]\n\r",
-               p_linea_parameter_block->fg_bp_1,
-               p_linea_parameter_block->fg_bp_2,
-               p_linea_parameter_block->fg_bp_3,
-               p_linea_parameter_block->fg_bp_4);
-        printf("lstlin     : %d\n\r", p_linea_parameter_block->lstlin);
-        printf("ln_mask    : %d\n\r", p_linea_parameter_block->ln_mask);
-        printf("wrt_mode   : %d\n\r", p_linea_parameter_block->wrt_mode);
-        printf("xy         : (%d %d) (%d %d)\n\r",
-               p_linea_parameter_block->x1,
-               p_linea_parameter_block->y1,
-               p_linea_parameter_block->x2,
-               p_linea_parameter_block->y2);
-        printf("patptr     : %p\n\r", p_linea_parameter_block->patptr);
-        printf("patmsk     : %d\n\r", p_linea_parameter_block->patmsk);
-        printf("multifill  : %d\n\r", p_linea_parameter_block->multifill);
-        printf("clip flag  : %d\n\r", p_linea_parameter_block->clip);
-        printf("clip rect  : (%d %d) (%d %d)\n\r",
-               p_linea_parameter_block->xmn_clip,
-               p_linea_parameter_block->ymn_clip,
-               p_linea_parameter_block->xmx_clip,
-               p_linea_parameter_block->ymx_clip);
-        printf("xacc_dda   : %d\n\r", p_linea_parameter_block->xacc_dda);
-        printf("dda_inc    : %d\n\r", p_linea_parameter_block->dda_inc);
-        printf("t_sclsts   : %d\n\r", p_linea_parameter_block->t_sclsts);
-        printf("mono_status: %d\n\r", p_linea_parameter_block->mono_status);
-        printf("source     : (%d %d)\n\r", p_linea_parameter_block->sourcex, p_linea_parameter_block->sourcey);
-        printf("dest       : (%d %d)\n\r", p_linea_parameter_block->destx, p_linea_parameter_block->desty);
-        printf("del        : (%d %d)\n\r", p_linea_parameter_block->delx, p_linea_parameter_block->dely);
-        printf("fwidth     : %d\n\r", p_linea_parameter_block->fwidth);
-        printf("style      : %d\n\r", p_linea_parameter_block->style);
-        printf("litemask   : %d\n\r", p_linea_parameter_block->litemask);
-        printf("skewmask   : %d\n\r", p_linea_parameter_block->skewmask);
-        printf("weight     : %d\n\r", p_linea_parameter_block->weight);
-        printf("r_off      : %d\n\r", p_linea_parameter_block->r_off);
-        printf("l_off      : %d\n\r", p_linea_parameter_block->l_off);
-        printf("scale      : %d\n\r", p_linea_parameter_block->scale);
-        printf("chup       : %d\n\r", p_linea_parameter_block->chup);
-        printf("text_fg    : %d\n\r", p_linea_parameter_block->text_fg);
-        printf("text_bg    : %d\n\r", p_linea_parameter_block->text_bg);
-        printf("scrtchp    : %p\n\r", p_linea_parameter_block->scrtchp);
-        printf("scrpt2     : %d\n\r", p_linea_parameter_block->scrpt2);
-        printf("copy_tran  : %d\n\r", p_linea_parameter_block->copy_tran);
-    }
+font_hdr_t *linea_get_font_block()
+{
+    return p_linea_font_hdr;
+}
 
-    if (p_linea_font_hdr)
-    {
-        printf("\n\r");
-        printf(">> font hdr (sizeof: %ld)\n\r", sizeof(font_hdr_t));
-        printf("font_id    : %d\n\r", p_linea_font_hdr->font_id);
-        printf("point      : %d\n\r", p_linea_font_hdr->point);
-        printf("first_ade  : %c\n\r", p_linea_font_hdr->first_ade);
-        printf("last_ade   : %c\n\r", p_linea_font_hdr->last_ade);
-    }
-
-    printf("=========================\n");
-#endif // ENABLE_STDLIB
+linea_vdiesc_t *linea_get_vdiesc_block()
+{
+    return p_plinea_vdiesc_block;
 }

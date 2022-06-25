@@ -65,7 +65,7 @@ if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
     target_link_libraries(cube.prg PRIVATE atari_common)
 endif()
 
-# Add color.prg =====================================================================================
+# Add color.prg ====================================================================================
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
     add_executable(color.prg
         # make sure crt0 is included first
@@ -75,6 +75,21 @@ if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
     )
 
     target_link_libraries(color.prg PRIVATE atari_common)
+endif()
+
+# Add line A debugger prg ==========================================================================
+if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
+    add_executable(la_dbg.prg
+        # make sure crt0 is included first
+        $ENV{HOME}/libcmini-0.54/lib/crt0.o
+        # then add sources
+        src/scenes/la_dbg.c
+    )
+    target_compile_definitions(la_dbg.prg
+        PRIVATE ENABLE_STDLIB
+    )
+
+    target_link_libraries(la_dbg.prg PRIVATE atari_common)
 endif()
 
 # Add tests ========================================================================================
