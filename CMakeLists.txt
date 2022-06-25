@@ -22,13 +22,16 @@ include_directories(src/includes)
 
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
 
-    # Set target m68x CPU with short int
+    # Set target m68x CPU
     add_compile_options(-m68000)
-    add_compile_options(-mshort)
     add_link_options(-Wl,--traditional-format)
 
+    # Set short int
+    # add_compile_options(-mshort)
+    # link_directories($ENV{HOME}/libcmini-0.54/lib/mshort)
+
     # Set build without stdlib and use "libcmini" instead
-    link_directories($ENV{HOME}/libcmini-0.54/lib/mshort)
+    link_directories($ENV{HOME}/libcmini-0.54/lib)
     add_link_options(-nostdlib)
     link_libraries(cmini gcc)
 
