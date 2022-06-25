@@ -43,21 +43,6 @@
     }
 #endif // ENABLE_FAST_CALL
 
-#define DRAW_CUBE_SCREEN_SEGMENT(P1, P2)                       \
-    {                                                          \
-        matdata_t z1 = MAT_AT_UNSAFE(coord_space, (P1), 2);    \
-        matdata_t z2 = MAT_AT_UNSAFE(coord_space, (P2), 2);    \
-        if (CAMERA_NEAR < z1 && z1 < CAMERA_FAR &&             \
-            CAMERA_NEAR < z1 && z2 < CAMERA_FAR)               \
-        {                                                      \
-            int16_t x1 = MAT_AT_UNSAFE(coord_screen, (P1), 0); \
-            int16_t y1 = MAT_AT_UNSAFE(coord_screen, (P1), 1); \
-            int16_t x2 = MAT_AT_UNSAFE(coord_screen, (P2), 0); \
-            int16_t y2 = MAT_AT_UNSAFE(coord_screen, (P2), 1); \
-            linea_draw_line(x1, y1, x2, y2);                   \
-        }                                                      \
-    }
-
 // Define globals ==================================================================================
 
 static Matrix_t coord_space_original;
@@ -174,22 +159,37 @@ void scene_update()
     }
 }
 
+inline static void draw_cube_screen_segment(uint16_t p1, uint16_t p2)
+{
+    matdata_t z1 = MAT_AT_UNSAFE(coord_space, p1, 2);
+    matdata_t z2 = MAT_AT_UNSAFE(coord_space, p2, 2);
+    if (CAMERA_NEAR < z1 && z1 < CAMERA_FAR &&
+        CAMERA_NEAR < z1 && z2 < CAMERA_FAR)
+    {
+        int16_t x1 = MAT_AT_UNSAFE(coord_screen, p1, 0);
+        int16_t y1 = MAT_AT_UNSAFE(coord_screen, p1, 1);
+        int16_t x2 = MAT_AT_UNSAFE(coord_screen, p2, 0);
+        int16_t y2 = MAT_AT_UNSAFE(coord_screen, p2, 1);
+        linea_draw_line(x1, y1, x2, y2);
+    }
+}
+
 void scene_draw()
 {
-    DRAW_CUBE_SCREEN_SEGMENT(0, 1);
-    DRAW_CUBE_SCREEN_SEGMENT(1, 2);
-    DRAW_CUBE_SCREEN_SEGMENT(2, 3);
-    DRAW_CUBE_SCREEN_SEGMENT(3, 0);
+    draw_cube_screen_segment(0, 1);
+    draw_cube_screen_segment(1, 2);
+    draw_cube_screen_segment(2, 3);
+    draw_cube_screen_segment(3, 0);
 
-    DRAW_CUBE_SCREEN_SEGMENT(4, 5);
-    DRAW_CUBE_SCREEN_SEGMENT(5, 6);
-    DRAW_CUBE_SCREEN_SEGMENT(6, 7);
-    DRAW_CUBE_SCREEN_SEGMENT(7, 4);
+    draw_cube_screen_segment(4, 5);
+    draw_cube_screen_segment(5, 6);
+    draw_cube_screen_segment(6, 7);
+    draw_cube_screen_segment(7, 4);
 
-    DRAW_CUBE_SCREEN_SEGMENT(0, 4);
-    DRAW_CUBE_SCREEN_SEGMENT(1, 5);
-    DRAW_CUBE_SCREEN_SEGMENT(2, 6);
-    DRAW_CUBE_SCREEN_SEGMENT(3, 7);
+    draw_cube_screen_segment(0, 4);
+    draw_cube_screen_segment(1, 5);
+    draw_cube_screen_segment(2, 6);
+    draw_cube_screen_segment(3, 7);
 }
 
 // Define main =====================================================================================
