@@ -95,6 +95,18 @@ if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
     target_link_libraries(la_dbg.prg PRIVATE atari_common)
 endif()
 
+# Add vdi_dbg.prg ==================================================================================
+if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
+    add_executable(vdi_dbg.prg
+        # make sure crt0 is included first
+        $ENV{HOME}/libcmini-0.54/lib/crt0.o
+        # then add sources
+        src/scenes/vdi_dbg.c
+    )
+
+    target_link_libraries(vdi_dbg.prg PRIVATE atari_common gem)
+endif()
+
 # Add tests ========================================================================================
 include(CTest)
 
