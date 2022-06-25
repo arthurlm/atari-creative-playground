@@ -42,9 +42,7 @@ endif()
 # add_compile_definitions(USE_PROJECTION_ORTHOGRAPHIC)
 
 # Add common library ===============================================================================
-
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
-
     add_library(atari_common STATIC
         # add sources
         src/linea.c
@@ -53,12 +51,10 @@ if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
         src/utils.c
         src/video.c
     )
-
 endif()
 
 # Add cube.prg =====================================================================================
 if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
-
     add_executable(cube.prg
         # make sure crt0 is included first
         $ENV{HOME}/libcmini-0.54/lib/crt0.o
@@ -67,7 +63,18 @@ if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
     )
 
     target_link_libraries(cube.prg PRIVATE atari_common)
+endif()
 
+# Add color.prg =====================================================================================
+if(CMAKE_C_COMPILER_VERSION VERSION_LESS 6.3) # m68k-atari-ming-gcc is 4.3
+    add_executable(color.prg
+        # make sure crt0 is included first
+        $ENV{HOME}/libcmini-0.54/lib/crt0.o
+        # then add sources
+        src/scenes/color.c
+    )
+
+    target_link_libraries(color.prg PRIVATE atari_common)
 endif()
 
 # Add tests ========================================================================================
